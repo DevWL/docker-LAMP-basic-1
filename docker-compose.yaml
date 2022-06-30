@@ -1,0 +1,74 @@
+version: "3.9"
+
+volumes:
+  sitefiles:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      # device: ./www
+      # device: /c/laragon/www/docker/apache-mysql-php/www
+      device: C:\laragon\www\docker\apache-mysql-php\www
+  apache_config1:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      # device: ./docker-compose/etc/httpd/conf.d
+      # device: /c/laragon/www/docker/apache-mysql-php/docker-compose/etc/httpd/conf.d
+      device: C:\laragon\www\docker\apache-mysql-php\docker-compose\etc\httpd\conf.d
+  apache_config2:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      # device: ./docker-compose/etc/httpd/conf
+      # device: /c/laragon/www/docker/apache-mysql-php/docker-compose/etc/httpd/conf
+      device: C:\laragon\www\docker\apache-mysql-php\docker-compose\etc\httpd\conf
+  mysql_dump:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      # device: ./docker-compose/mysql/dump
+      # device: /c/laragon/www/docker/apache-mysql-php/docker-compose/mysql/dump
+      device: C:\laragon\www\docker\apache-mysql-php\docker-compose\mysql\dump
+
+services:
+  apache:
+    image: httpd
+    container_name: apache-con-lamp
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - sitefiles:/usr/share/nginx/html
+      - apache_config1:/etc/httpd/conf.d
+      - apache_config2:/etc/httpd/conf
+
+  web:
+    build:
+      # context: .
+      # context: /c/laragon/www/docker/apache-mysql-php
+      context: C:\laragon\www\docker\apache-mysql-php
+      dockerfile: Dockerfile
+    image: myapp
+    container_name: myapp-con-lamp
+    restart: unless-stopped
+    working_dir: /var/www
+
+  db:
+    image: mysql
+    container_name: mymysql-con-lamp
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}
+      MYSQL_PASSWORD: ${DB_PASS}
+      MYSQL_USER: ${DB_USER}
+      SERVICE_TAG: dev
+      SERVICE_NAME: mymysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_dump:/docker-entrypoint-initdb.d
