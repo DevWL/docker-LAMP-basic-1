@@ -1,1 +1,4 @@
-FROM php:7.4-fpm
+FROM httpd:latest
+
+WORKDIR /var/www
+COPY . /var/www

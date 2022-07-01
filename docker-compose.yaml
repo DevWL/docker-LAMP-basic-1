@@ -8,6 +8,7 @@ volumes:
       o: bind
       # device: ./www
       # device: /c/laragon/www/docker/apache-mysql-php/www
+      # device: /mnt/c/laragon/www/docker/apache-mysql-php/www
       device: C:\laragon\www\docker\apache-mysql-php\www
   apache_config1:
     driver: local
@@ -42,7 +43,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - sitefiles:/usr/share/nginx/html
+      - sitefiles:/var/www
       - apache_config1:/etc/httpd/conf.d
       - apache_config2:/etc/httpd/conf
 
@@ -50,12 +51,15 @@ services:
     build:
       # context: .
       # context: /c/laragon/www/docker/apache-mysql-php
-      context: C:\laragon\www\docker\apache-mysql-php
+      context: .
       dockerfile: Dockerfile
     image: myapp
     container_name: myapp-con-lamp
     restart: unless-stopped
     working_dir: /var/www
+    depends_on: 
+      - mymysql-con-lamp
+      - apache-con-lamp
 
   db:
     image: mysql
@@ -72,3 +76,10 @@ services:
       - 3306:3306
     volumes:
       - mysql_dump:/docker-entrypoint-initdb.d
+
+  php:
+    image: php:7.4-fpm
+    container_name: myphp74-con-lamp
+    restart: unless-stopped
+    depends_on: 
+      - apache-con-lamp

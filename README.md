@@ -1,9 +1,14 @@
+Project localisation 
+WSL2 - /mnt/c/laragon/www/docker/apache-mysql-php
+GitBash - /c/laragon/www/docker/apache-mysql-php
+Windows - C:\laragon\www\docker\apache-mysql-php
+
 Table of Contents
-What the project does
-Why the project is useful
-How users can get started with the project
-Where users can get help with your project
-Who maintains and contributes to the project
+    What the project does
+    Why the project is useful
+    How users can get started with the project
+    Where users can get help with your project
+    Who maintains and contributes to the project
 
 DOCKER SETUP 
     --- To get latest app version run:
